@@ -10,8 +10,8 @@ Breadboard computer, from scratch, of course!
 # To Doot
 ```
 registers  - ist evan mee bezig ATM
-MEEM  - ist dan the man mee bezig ATM
+MEEM  - eerste test live
 ALU
-PC
+PC  - dan
 IR
 ```
