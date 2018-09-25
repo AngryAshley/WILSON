@@ -20,11 +20,18 @@ IR
 
 # Ideads
 
-Mass Storage Device
-krijgt een control signal zodra ze worden gecall'd door een van de twee commando's
+South bridge
+krijgt een control signal hij wordt gecall'd door een van de twee commando's
 MSL (Mass Storage Load) of 
 MSS (Mass Storage Store)
-eerste byte van de commando's stuurt het addres over de bus, wat de buffers van het corresponderende MSD opengooit, het controlsignaal stopt zodat data niet perongeluk andere MSD's openzet. Daarna wordt er een adres overgestuurd totdat de control unit een signaal terugkrijgt dat het volledige adres is verzonden. Daarna wordt er een byte ingelezen of uitgeschreven.
+Er wordt een adres overgestuurd totdat de control unit een signaal terugkrijgt dat het volledige adres is verzonden. Daarna wordt er een byte ingelezen of uitgeschreven. Zo kan er worden geinterfaced met een onbeperkt aantal adressen. Dit is het deel wat de computer kan verbinden met misc. IO zoals een terminal of mass-storage device
+
+Recording programs on taep
+Programma's op tape opnemen kan simpelweg gedaan worden door een unit te verbinden aan de S-bus, die vervolgens een kleine buffer heeft om de data te verzekeren. De data wordt in een 8>1 mux gevoerd en de output wordt in een transistor gestopt. Die transistor koppelt een extra resistor aan een 555-timercircuit, wat de toon verandert.
+
+Reading programs on taep
+Programma's lezen van tape wordt een heel stuk moeilijker. Dit zou gedaan kunnen worden met twee peak-pass filters die staan getuned op de juiste frequenties. Die twee kanalen worden in een opamp gevoerd die triggert vanaf een bepaald voltage, om ruis te filteren.
+
 
 
 
