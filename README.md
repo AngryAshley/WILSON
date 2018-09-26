@@ -13,7 +13,7 @@ registers  - ist goed denk ik
 MEEM  - eerste test live
 ALU
 PC  - dan
-IR
+IR  - ist evan me bezig
 ```
 
 
