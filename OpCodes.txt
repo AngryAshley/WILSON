@@ -1,22 +1,24 @@
-00 HLT
-FF HLT
+00 HLT #Halts shit
+FF HLT #Also halts shit
 
-01 LDA
-02 LDB
+01 LDA #load address from next byte in register A
+02 LDB #load address from next byte in register B
 03 RES
 04 RES
 
-05 ADD
-06 SUB
-07 STO
-08 RES
+05 ADD #Adds A and B together, stores the result in A
+06 SUB #Subtracts A from B, stores the result in A
+07 STO #Store register A to address from next byte
+08 RES 
 
-09 JMP
-0A JEZ
-0B JEQ
-0C JC
-0D JP
+09 JMP #Jumps to memory address from next byte
+0A JEZ #Jumps to memory address from next byte if Register A is equal to zero
+0B JEQ #Jumps to memory address from next byte if register A is equal to register B
+0C JC  #Jumps to memory address from next byte if the carry flag is set
+0D JP  #Jumps to memory address from next byte if register A is a positive integer
 0E RES
 0F RES
 
-
+10 INT #Sends an interrupt signal to device address from next byte, then sends the byte after that to the device
+11 WFI #Waits for an interrupt and stores the byte from the bus to the address from next byte
+12 IN

@@ -1,0 +1,13 @@
+$0000-$00FF <255 bytes> CPU-Side RAM
+
+--SouthBridge--
+
+$0100-$40FF <16 Kilobytes> SB RAM Expander
+$4100-$41FF <255 bytes> COM ports
+$4200-$59FF <2 Kilobytes> SB ROM
+$5A00-$61FF <2 Kilobytes> Video ram
+
+$8000-$FFFF <32 Kilobytes> Expansion ports
+
+
+somehow 360K aanspreken v
