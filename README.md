@@ -9,11 +9,11 @@ Breadboard computer, from scratch, of course!
 
 # To Doot
 ```
-registers  - ist goed denk ik
-MEEM  - eerste test live
+registers - Done
+MEEM - Done
 ALU - Lijkt me OK
-PC  - dan
-IR  - ist evan me bezig
+PC - dan
+IR - Done
 ```
 
 
@@ -22,14 +22,14 @@ IR  - ist evan me bezig
 
 South bridge
 
-krijgt een control signal hij wordt gecall'd door een van de twee commando's
-EIL (External Interface Load) of 
-EIS (External Interface Store)
-Er wordt een adres overgestuurd totdat de control unit een signaal terugkrijgt dat het volledige adres is verzonden. Daarna wordt er een byte ingelezen of uitgeschreven. Zo kan er worden geinterfaced met een onbeperkt aantal adressen. Dit is het deel wat de computer kan verbinden met misc. IO zoals een terminal of mass-storage device
+Krijgt een control signal en daarna twee bytes doorgestuurd die fungeren als 16-bit adres. 
+De commandos zijn SBL (South Bridge Load) en SBS (South Bridge Store).
+Na het volgende clocksignaal wordt de byte op de 16-bit bus en meteen op de 8-bit bus gegooid naar het A register. 
+Dit is het deel wat de computer kan verbinden met misc. IO zoals een terminal of mass-storage device.
 
 Recording programs on taep
 
-Programma's op tape opnemen kan simpelweg gedaan worden door een unit te verbinden aan de S-bus, die vervolgens een kleine buffer heeft om de data te verzekeren. De data wordt in een 8>1 mux gevoerd en de output wordt in een transistor gestopt. Die transistor koppelt een extra resistor aan een 555-timercircuit, wat de toon verandert.
+Programma's op tape opnemen kan simpelweg gedaan worden door een device te verbinden aan de Southbridge samen met een 256 byte buffer of de seriële poort. De data wordt in een 8>1 mux gevoerd en de output wordt naar een transistor gestuurt. Die transistor koppelt een extra resistor aan een 555-timercircuit, wat de toon verandert.
 
 Reading programs on taep
 
