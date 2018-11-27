@@ -11,7 +11,7 @@ Breadboard computer, from scratch, of course!
 ```
 registers  - ist goed denk ik
 MEEM  - eerste test live
-ALU
+ALU - Lijkt me OK
 PC  - dan
 IR  - ist evan me bezig
 ```
