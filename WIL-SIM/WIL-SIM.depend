@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1548076726 source:d:\wilson\wil-sim\main.cpp
+	<chrono>
+	<thread>
+	<iostream>
+	<stdio.h>
+	<conio.h>
+
