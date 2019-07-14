@@ -1,0 +1,33 @@
+ = VGA SPECS = 
+vram will be 64k for a 320x200 resolution.
+The VGA "Carrier" signal used will be 640x400@70
+this signal divided by two will be the pixel clock for the rest of the video card.
+
+ = THE FONT = 
+The WILSON font uses 4 bits wide characters with blank space included.
+320/80=4, so with a horizontal resolution of 320 and a 4 pixel wide font, 
+80 characters would fit. The letters in the font are 5 bits wide and do NOT include
+blank space between rows. The final row size would be 6 pixels high. 
+200/25=8, so the 6 pixel high font would fit nicely. 
+To get a 5x5 pixel font, the amount of columns must be reduced. 320/5=64, so with a 5x5 pixel
+font, the maximum columns is just 64, which might be too little.
+
+ = SOLUTIONS FOR MEMORY ACCESS =
+VGA counter will read from the vram continuously
+as soon as a write is done to the vram, the VGA Read and Write will be disconnected
+and reconnected as soon as the computer is done writing to the card.
+The video will draw black in a certain region for about a frame
+The connection being 70 fps, the user won't see a thing.
+This is probably the easiest route, as there is no special timing involved.
+I am not sure about the visibility of the blanking of this method, 
+but my hypothesis is that it should be okay.
+
+Another option similar to the first one is to blank the screen entirely for one frame
+while writing to the screen memory, where the blitter renders the entire screen bit by bit
+This only has to happen when something gets written to screen memory. 
+
+another option is to use a secondary RAM chip as buffer which gets written to continuously
+and gets mirrored to the output RAM during the blanking lines of the VGA signal.
+
+Yet another option is to have the blitter render every line of video during it's
+blank interval every time, this saves a RAM chip in contrast to the previous idea.
