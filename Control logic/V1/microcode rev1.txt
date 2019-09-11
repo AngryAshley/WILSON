@@ -1,0 +1,91 @@
+Legend
+HF  = Halt Flag
+CLK = Clock
+RGA = A register
+RGB = B register
+IR  = Instruction register
+MAR = Memory Address Register
+PC  = Program Counter
+
+ - FETCH CYCLE
+I0 PC ->MAR
+I1 RAM->IR & CLK->PC
+
+
+00 HLT
+
+I2 HF
+
+ - 01 LDA
+
+I2 PC
+I3 PC ->MAR
+I4 RAM->RGA
+I5 RGA->MAR
+I6 RAM->RGA
+
+
+ - 02 LDB
+
+I2 PC
+I3 PC ->MAR
+I4 RAM->RGB
+I5 RGB->MAR
+I6 RAM->RGB
+
+ - 03 LDH 
+
+I2 PC
+I3 PC ->MAR
+I4 ALU
+I5 RAM->RGB & PC
+I6 PC ->MAR
+I7 RAM->MAR
+I8 JMP|RGB->MAR
+I9 RAM->RGA
+
+ - 05 ADD
+
+I2 IR ->ALU
+I3 ALU->RGA
+
+
+ - 06 SUB
+
+I2 IR ->ALU
+I3 ALU->RGA
+
+
+ - 07 STO
+
+I2 PC
+I3 PC ->MAR
+I4 RAM->MAR
+I5 RGA->RAM
+
+
+ - 08 STH        #Change address to himem, MSB first, will clear register B
+
+I2 PC
+I3 PC ->MAR
+I4 ALU           #Put ALU in mode 0
+I5 RAM->RGB PC
+I6 PC ->MAR
+I7 RAM->MAR
+I8 JMP|RGB->MAR  #ALU will have clock line to MAR2, triggered when jumped in mode 0. This trigger disables clock to MAR.
+I9 RGA->RAM
+
+
+ - 09 JMP
+
+I2 PC
+I3 PC ->MAR
+I4 RAM->PC
+
+
+ - 0A JZ
+
+I2 PC
+I3 PC ->MAR
+I4 IR ->ALU    #ALU will choose to AND CLK, JMP and ZF together
+I5 JMP|RAM->PC

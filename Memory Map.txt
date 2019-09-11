@@ -11,4 +11,4 @@ $5200-$52FF <256 bytes> Floppy drive buffer
 $8000-$FFFF <32 Kilobytes> Expansion ports
 
 
-somehow 360K aanspreken v
+somehow 360K aanspreken v(oor CPM neem ik aan???)

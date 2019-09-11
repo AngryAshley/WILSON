@@ -1,15 +1,15 @@
 00 HLT #Halts shit
 FF HLT #Also halts shit
 
-01 LDA #load address from next byte in register A
-02 LDB #load address from next byte in register B
-03 RES
+01 LDA #load next byte from address in register A
+02 LDB #load next byte from address in register B
+03 LDH #load next byte from hi-memory address in register A
 04 RES
 
 05 ADD #Adds A and B together, stores the result in A
 06 SUB #Subtracts A from B, stores the result in A
 07 STO #Store register A to address from next byte
-08 RES 
+08 STH #Store register A to hi-memory address from next two bytes 
 
 09 JMP #Jumps to memory address from next byte
 0A JEZ #Jumps to memory address from next byte if Register A is equal to zero
