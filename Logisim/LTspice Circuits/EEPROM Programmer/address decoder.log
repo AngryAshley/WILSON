@@ -1,0 +1,28 @@
+Circuit: * D:\WILSON\Logisim\LTspice Circuits\EEPROM Programmer\address decoder.asc
+
+WARNING: Node N002 is floating.
+
+WARNING: Less than two connections to node N002.  This node is used by R2.
+Per .tran options, skipping operating point for transient analysis.
+Changing Tseed to 1e-008
+Heightened Def Con from 1.12599e-008 to 1.23849e-008
+Heightened Def Con from 1.41364e-008 to 1.43864e-008
+Heightened Def Con from 1.95659e-008 to 1.98159e-008
+
+Date: Wed Mar 13 09:13:16 2019
+Total elapsed time: 0.063 seconds.
+
+tnom = 27
+temp = 27
+method = modified trap
+totiter = 3852
+traniter = 3852
+tranpoints = 1217
+accept = 1152
+rejected = 67
+matrix size = 7
+fillins = 4
+solver = Normal
+Matrix Compiler1: 860 bytes object code size  0.3/0.2/[0.2]
+Matrix Compiler2: 685 bytes object code size  0.2/0.2/[0.1]
+

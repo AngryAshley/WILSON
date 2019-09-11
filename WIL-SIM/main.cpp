@@ -1,21 +1,21 @@
 #include <chrono>
 #include <thread>
-
 #include <iostream>
 #include <stdio.h>
 #include <conio.h>
+#include <Windows.h>
 
 using namespace std;
 
 ///--- Settings ---\\\
 
 bool StepCLK = false;
-int CLK = 2; //Max 1MHz
+int CLK = 2; //In Hz, 1MHz max
 int beginAddr = '\x00';
 
 ///----------------///
 
-char ram[255] = {'\x01','\x09','\x00','\x00'};
+char ram[255] = {'\x01','\x0A','\x09','\x00','\x00'};
 char currentInst;
 int PC=0;
 int ADDR=0;
@@ -112,7 +112,9 @@ void run(){
         if(StepCLK){
             getch();
         } else {
-            this_thread::sleep_for(chrono::microseconds(1000000/CLK));
+            ///this_thread::sleep_for(chrono::microseconds(1000000/CLK));
+            ///usleep(1000000/CLK);
+            Sleep(1);
         }
     }
 }
@@ -125,6 +127,7 @@ int main()
     run();
 
     printf("Simulation ended\n");
+
     return 0;
 }
 
