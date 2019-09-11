@@ -1,5 +1,0 @@
-Circuit: * D:\WILSON\Logisim\LTspice Circuits\EEPROM Programmer\Draft1.asc
-
-Fatal Error:  Unknown parameter "5meg"
- in line:
-"a1 0 n005 n004 n004 n004 n004 n006 n004 varistor 100k 5meg"
