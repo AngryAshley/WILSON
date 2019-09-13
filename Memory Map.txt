@@ -12,3 +12,4 @@ $8000-$FFFF <32 Kilobytes> Expansion ports
 
 
 somehow 360K aanspreken v(oor CPM neem ik aan???)
+       164.132.23.211:25581
