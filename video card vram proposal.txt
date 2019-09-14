@@ -1,3 +1,7 @@
+This video card will be designed as a direct replacement for a serial communication card.
+The card will still feature a serial port, but it is only used to receive data from a keyboard.
+Instead of passing the outgoing data through a shift register, the video card will 
+
  = VGA SPECS = 
 vram will be 64k for a 320x200 resolution.
 The VGA "Carrier" signal used will be 640x400@70
@@ -10,24 +14,41 @@ The WILSON font uses 4 bits wide characters with blank space included.
 blank space between rows. The final row size would be 6 pixels high. 
 200/25=8, so the 6 pixel high font would fit nicely. 
 To get a 5x5 pixel font, the amount of columns must be reduced. 320/5=64, so with a 5x5 pixel
-font, the maximum columns is just 64, which might be too little.
+font, the maximum columns is just 64. 64 columns might be too little, but it will make
+all the text a lot more readable. Modifications to the WILSON font are to be decided after
+the first implementation test.
 
  = SOLUTIONS FOR MEMORY ACCESS =
-VGA counter will read from the vram continuously
-as soon as a write is done to the vram, the VGA Read and Write will be disconnected
-and reconnected as soon as the computer is done writing to the card.
-The video will draw black in a certain region for about a frame
-The connection being 70 fps, the user won't see a thing.
-This is probably the easiest route, as there is no special timing involved.
+Because the function of a video card is to display video, 
+maintaining the VGA signal is paramount. 
+That's why the VGA counter will read from the VRAM continuously.
+Ofcourse, if the Video RAM is being read from, it can't be written to. 
+Because of this, there needs to be a special circuit that handles reads and writes to the VRAM.
+Thinking it over a few times, such a circuit is not as easy as it appears.
+Below are several solutions to this read/write control problem.
+
+One solution is to limit the analog side's access to the VRAM while the digital side writes
+to it. As soon as a write is done to the VRAM, the VGA Read and Write will be disconnected
+and reconnected as soon as the computer is done writing to the VRAM.
+The video will, as a result, draw black pixels in a certain region for one frame.
+The refresh rate being 70 hz, the user won't see a thing.
 I am not sure about the visibility of the blanking of this method, 
 but my hypothesis is that it should be okay.
+Implementing this solution would be very easy, as there wouldn't be any timing circuitry
+involved, the signal would just be cut off if the computer demands access.
+In this solution, the computer side is dominant and forces it's information to the VRAM.
 
 Another option similar to the first one is to blank the screen entirely for one frame
 while writing to the screen memory, where the blitter renders the entire screen bit by bit
 This only has to happen when something gets written to screen memory. 
+In this solution, the computer side is dominant and chooses if the memory gets read from or not.
 
-another option is to use a secondary RAM chip as buffer which gets written to continuously
-and gets mirrored to the output RAM during the blanking lines of the VGA signal.
+Another option is to use a secondary RAM chip as buffer which gets written to continuously
+and gets mirrored to the output RAM during the vertical back porch of the VGA signal.
+The circuitry can use the sync pulse to determine if the RAM chip is being read from.
+In this solution, the sides are running in "symbiosis", the computer side accesses the ram
+when the analog side does not require it.
 
-Yet another option is to have the blitter render every line of video during it's
-blank interval every time, this saves a RAM chip in contrast to the previous idea.
+Yet another option is to have the blitter render every line of video during every
+horizontal back porch, this saves a RAM chip in contrast to the previous idea.
+In this solution, the sides are also running in "symbiosis"

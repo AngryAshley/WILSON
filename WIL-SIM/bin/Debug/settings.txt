@@ -1,2 +1,2 @@
-STEP=1
+STEP=0
 SPEED=2

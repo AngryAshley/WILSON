@@ -4,8 +4,7 @@
 #include <fstream>
 #include <stdio.h>
 #include <conio.h>
-#include <Windows.h>
-#include <string>
+#include <string.h>
 
 using namespace std;
 
@@ -28,6 +27,20 @@ bool CARRY = false;
 bool running = true;
 string splits[16];
 string path_exe="";
+
+#ifdef __linux__
+    void getPath(){
+        sprintf(path_exe, "/proc/%d/exe", getpid());
+    }
+#elif _WIN32
+    #include <Windows.h>
+    void getPath(){
+        char path_exe_temp[1024];
+        GetModuleFileName(NULL, path_exe_temp, 1024);       ///Gebruikt nog windows.h, vind wat beters hiervoor
+        int pos=string(path_exe_temp).find_last_of("\\/");
+        path_exe=string(path_exe_temp).substr( 0, pos+1);
+    }
+#endif
 
 string* splitString(string temp, char* tokens){
     int s=0;
@@ -56,44 +69,70 @@ string file_getLine(string path, int lineNumber){
     }
     return temp;
 }
-void getPath() {
-    char path_exe_temp[1024];
-    GetModuleFileName(NULL, path_exe_temp, 1024);
-    int pos=string(path_exe_temp).find_last_of("\\/");
-    path_exe=string(path_exe_temp).substr( 0, pos+1);
-}
+
 void loadSettings(){
     StepCLK=atoi(splitString(file_getLine(path_exe+"\\settings.txt",0),"=")[1].c_str());
     CLK=atoi(splitString(file_getLine(path_exe+"\\settings.txt",1),"=")[1].c_str());
 }
 void loadProgram(){
-    string compArg = splitString(file_getLine(path_exe+"\\settings.txt",0)," =")[0];
-    beginAddr = atoi(splitString(file_getLine(path_exe+"\\settings.txt",0)," =")[2]);
+    string compArg = splitString(file_getLine(path_exe+"\\program.txt",0)," =")[0];
+    beginAddr = atoi(splitString(file_getLine(path_exe+"\\program.txt",0)," =")[2].c_str());
     if(compArg=="HEX"){
 
 
 
     } else if(compArg=="ASSEMBLY"){
-        int i=1;
+        printf(" *** COMPILING PROGRAM...\n");
+        int i=2;
         int ramPos=0;
         string currInst="";
         while(true){
-            currInst = file_getLine(path_exe+"\\settings.txt",i);
-            if(currInst==""){break;};
+            splits[0]="";
+            currInst = file_getLine(path_exe+"\\program.txt",i);
             splitString(currInst," ");
-            if(splits[0]=="LDA"){
-                ram[rampos]=='\x01';
-                rampos++;
-                ram[rampos]==atoi(splits[1]);
+            if(splits[0]==""||ramPos==256||i==255){break;}; //||splits[0]=="EOF"
+            if(splits[0]=="HLT"){
+                ram[ramPos]='\x00';
+            } else if(splits[0]=="LDA"){
+                ram[ramPos]='\x01';
+                ramPos++;
+                ram[ramPos]=atoi(splits[1].c_str());
             } else if(splits[0]=="LDB"){
-                ram[rampos]=='\x02';
-                rampos++;
-                ram[rampos]==atoi(splits[1]);
+                ram[ramPos]='\x02';
+                ramPos++;
+                ram[ramPos]=atoi(splits[1].c_str());
             } else if(splits[0]=="ADD"){
-
+                ram[ramPos]='\x05';
+            } else if(splits[0]=="SUB"){
+                ram[ramPos]='\x06';
+            } else if(splits[0]=="STO"){
+                ram[ramPos]='\x07';
+                ramPos++;
+                ram[ramPos]=atoi(splits[1].c_str());
+            } else if(splits[0]=="JMP"){
+                ram[ramPos]='\x09';
+                ramPos++;
+                ram[ramPos]=atoi(splits[1].c_str());
+            }  else if(splits[0]=="JZ"){
+                ram[ramPos]='\x0A';
+                ramPos++;
+                ram[ramPos]=atoi(splits[1].c_str());
+            } else if(splits[0]=="JE"){
+                ram[ramPos]='\x0B';
+                ramPos++;
+                ram[ramPos]=atoi(splits[1].c_str());
+            } else if(splits[0]=="JC"){
+                ram[ramPos]='\x0C';
+                ramPos++;
+                ram[ramPos]=atoi(splits[1].c_str());
+            } else {
+                ram[ramPos]=atoi(splits[0].c_str());
             }
-            rampos++;
+            i++;
+            printf("Loading command %s in address %d\n",splits[0].c_str(),ramPos);
+            ramPos++;
         };
+        printf(" *** PROGRAM COMPILED SUCCESSFULLY\n");
     } else {
         printf(" *** PROGRAM EXEPTION - FILE TYPE NOT RECOGNISED\n");
         return;
@@ -171,15 +210,16 @@ void execute(char inst){
 }
 
 void run(){
+    ADDR=beginAddr;
     while(running){
         currentInst = ram[ADDR];
         execute(currentInst);
         if(StepCLK){
             getch();
         } else {
-            ///this_thread::sleep_for(chrono::microseconds(1000000/CLK));
+            this_thread::sleep_for(chrono::microseconds(1000000/CLK));
             ///usleep(1000000/CLK);
-            Sleep(1);
+            ///Sleep(CLK);
         }
     }
 }
@@ -190,6 +230,7 @@ int main()
     printf(" *** Loading settings...\n");
     getPath();
     loadSettings();
+    loadProgram();
     printf(" *** Starting program at address 0x%02x\n",beginAddr & 0xFF);
     run();
     printf(" *** Simulation ended\n");
