@@ -16,7 +16,7 @@ int beginAddr = '\x00';
 
 ///----------------///
 
-char ram[255] = {'\x01','\x09','\x00','\x00'};
+char ram[255];
 char currentInst;
 int PC=0;
 int ADDR=0;
@@ -27,6 +27,7 @@ bool CARRY = false;
 bool running = true;
 string splits[16];
 string path_exe="";
+string progFileName="";
 
 #ifdef __linux__
     void getPath(){
@@ -73,22 +74,32 @@ string file_getLine(string path, int lineNumber){
 void loadSettings(){
     StepCLK=atoi(splitString(file_getLine(path_exe+"\\settings.txt",0),"=")[1].c_str());
     CLK=atoi(splitString(file_getLine(path_exe+"\\settings.txt",1),"=")[1].c_str());
+    progFileName=splitString(file_getLine(path_exe+"\\settings.txt",2),"=")[1].c_str();
 }
 void loadProgram(){
-    string compArg = splitString(file_getLine(path_exe+"\\program.txt",0)," =")[0];
-    beginAddr = atoi(splitString(file_getLine(path_exe+"\\program.txt",0)," =")[2].c_str());
+    string compArg = splitString(file_getLine(path_exe+progFileName,0)," =")[0];
+    beginAddr = atoi(splitString(file_getLine(path_exe+progFileName,0)," =")[2].c_str());
+    string currInst="";
+    int i=2;
+    int ramPos=0;
     if(compArg=="HEX"){
-
-
-
+        printf(" *** LOADING MEMORY...\n");
+        while(ramPos<255){
+            currInst = file_getLine(path_exe+progFileName,i);
+            splitString(currInst," ");
+            printf("%02X | %s\n",ramPos,currInst.c_str());
+            for(int j=0;j<8;j++){
+                ram[ramPos]=stoi(splits[j],0,16);
+                ramPos++;
+            }
+            i++;
+        }
+        printf(" *** MEMORY LOADED SUCCESSFULLY\n");
     } else if(compArg=="ASSEMBLY"){
         printf(" *** COMPILING PROGRAM...\n");
-        int i=2;
-        int ramPos=0;
-        string currInst="";
         while(true){
             splits[0]="";
-            currInst = file_getLine(path_exe+"\\program.txt",i);
+            currInst = file_getLine(path_exe+progFileName,i);///"\\program.txt"
             splitString(currInst," ");
             if(splits[0]==""||ramPos==256||i==255){break;}; //||splits[0]=="EOF"
             if(splits[0]=="HLT"){
@@ -231,6 +242,8 @@ int main()
     getPath();
     loadSettings();
     loadProgram();
+    printf(" *** Press any key to start the simulation\n");
+    getch();
     printf(" *** Starting program at address 0x%02x\n",beginAddr & 0xFF);
     run();
     printf(" *** Simulation ended\n");
