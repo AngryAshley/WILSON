@@ -16,7 +16,7 @@ int beginAddr = '\x00';
 
 ///----------------///
 
-char ram[255];
+unsigned char ram[255];
 char hiRAM[65535];
 char currentInst;
 int PC=0;
@@ -148,19 +148,15 @@ void loadProgram(){
                     ram[ramPos]='\x11';
                 }
                 ramPos++;
-                ram[ramPos]=atoi(splits[1].substr(0,1).c_str());
+                ram[ramPos]=stoi(splits[1].substr(0,2).c_str(),0,16);
                 ramPos++;
-                ram[ramPos]=atoi(splits[1].substr(2,3).c_str());
+                ram[ramPos]=stoi(splits[1].substr(2,2).c_str(),0,16);
             } else if(splits[0]=="STH"){
                 ram[ramPos]='\x12';
                 ramPos++;
-                printf("Splitting %s, first is \"%s\" second \"%s\"",splits[1].c_str(),splits[1].substr(0,2).c_str(),splits[1].substr(2,2).c_str());
-                //ram[ramPos]=stoi(splits[1].substr(0,2).c_str(),0,16);
-                hiAddTemp=strtol("DE",nullptr,16);
-                godverdomme=hiAddTemp;
-                ram[ramPos]=godverdomme;
+                ram[ramPos]=stoi(splits[1].substr(0,2).c_str(),0,16);
                 ramPos++;
-                ram[ramPos]=strtoul(splits[1].substr(2,2).c_str(),0,16);
+                ram[ramPos]=stoi(splits[1].substr(2,2).c_str(),0,16);
             } else {
                 ram[ramPos]=atoi(splits[0].c_str());
             }
@@ -254,6 +250,7 @@ void execute(char inst){
                      ADDR++;
                      itoa(ram[ADDR],temp,16);
                      hiAddrTemp+=temp;
+                     ADDR++;
                      hiAddr=strtoul(hiAddrTemp.c_str(),0,16);
                      RegA=hiRAM[hiAddr];
                      break;
@@ -263,6 +260,7 @@ void execute(char inst){
                      ADDR++;
                      itoa(ram[ADDR],temp,16);
                      hiAddrTemp+=temp;
+                     ADDR++;
                      hiAddr=strtoul(hiAddrTemp.c_str(),0,16);
                      RegB=hiRAM[hiAddr];
                      break;
@@ -272,6 +270,7 @@ void execute(char inst){
                      ADDR++;
                      itoa(ram[ADDR],temp,16);
                      hiAddrTemp+=temp;
+                     ADDR++;
                      hiAddr=strtoul(hiAddrTemp.c_str(),0,16);
                      hiRAM[hiAddr]=RegA;
                      break;
