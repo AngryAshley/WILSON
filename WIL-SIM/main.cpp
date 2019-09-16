@@ -17,12 +17,15 @@ int beginAddr = '\x00';
 ///----------------///
 
 char ram[255];
+char hiRAM[65535];
 char currentInst;
 int PC=0;
 int ADDR=0;
 int RegA=0;
 int RegB=0;
+int hiAddr=0;
 
+string hiAddrTemp="";
 bool CARRY = false;
 bool running = true;
 string splits[16];
@@ -80,6 +83,8 @@ void loadProgram(){
     string compArg = splitString(file_getLine(path_exe+progFileName,0)," =")[0];
     beginAddr = atoi(splitString(file_getLine(path_exe+progFileName,0)," =")[2].c_str());
     string currInst="";
+    long hiAddTemp=0;
+    int godverdomme=0;
     int i=2;
     int ramPos=0;
     if(compArg=="HEX"){
@@ -136,6 +141,26 @@ void loadProgram(){
                 ram[ramPos]='\x0C';
                 ramPos++;
                 ram[ramPos]=atoi(splits[1].c_str());
+            } else if(splits[0]=="LHA"||splits[0]=="LHB"){
+                if(splits[0]=="LHA"){
+                    ram[ramPos]='\x10';
+                } else {
+                    ram[ramPos]='\x11';
+                }
+                ramPos++;
+                ram[ramPos]=atoi(splits[1].substr(0,1).c_str());
+                ramPos++;
+                ram[ramPos]=atoi(splits[1].substr(2,3).c_str());
+            } else if(splits[0]=="STH"){
+                ram[ramPos]='\x12';
+                ramPos++;
+                printf("Splitting %s, first is \"%s\" second \"%s\"",splits[1].c_str(),splits[1].substr(0,2).c_str(),splits[1].substr(2,2).c_str());
+                //ram[ramPos]=stoi(splits[1].substr(0,2).c_str(),0,16);
+                hiAddTemp=strtol("DE",nullptr,16);
+                godverdomme=hiAddTemp;
+                ram[ramPos]=godverdomme;
+                ramPos++;
+                ram[ramPos]=strtoul(splits[1].substr(2,2).c_str(),0,16);
             } else {
                 ram[ramPos]=atoi(splits[0].c_str());
             }
@@ -144,6 +169,15 @@ void loadProgram(){
             ramPos++;
         };
         printf(" *** PROGRAM COMPILED SUCCESSFULLY\n");
+        int tempAdd=0;
+        for(int i=0;i<8;i++){
+            for(int j=0;j<8;j++){
+                printf("%02X ",ram[tempAdd]);
+                tempAdd++;
+            }
+            printf("\n");
+        }
+
     } else {
         printf(" *** PROGRAM EXEPTION - FILE TYPE NOT RECOGNISED\n");
         return;
@@ -154,11 +188,12 @@ void loadProgram(){
 void execute(char inst){
     printf("Current Instruction: 0x%02x\n",inst & 0xFF);
     printf("PC: %i, ADDR: %x, RegA: %i, RegB: %i \n",PC,ADDR,RegA,RegB);
+    char temp[2];
 
     switch(inst){
         case '\xFF':
         case '\x00': running = false;
-                     printf("HALTED\n");
+                     printf("HALTED AT %02X\n",ADDR);
                      break;
         case '\x01': ADDR++;                   ///LDA - Load next byte into RegA
                      RegA = ram[ADDR];
@@ -212,6 +247,33 @@ void execute(char inst){
                      } else {
                         ADDR++;
                      }
+                     break;
+        case '\x10': ADDR++;
+                     itoa(ram[ADDR],temp,16);
+                     hiAddrTemp=temp;
+                     ADDR++;
+                     itoa(ram[ADDR],temp,16);
+                     hiAddrTemp+=temp;
+                     hiAddr=strtoul(hiAddrTemp.c_str(),0,16);
+                     RegA=hiRAM[hiAddr];
+                     break;
+        case '\x11': ADDR++;
+                     itoa(ram[ADDR],temp,16);
+                     hiAddrTemp=temp;
+                     ADDR++;
+                     itoa(ram[ADDR],temp,16);
+                     hiAddrTemp+=temp;
+                     hiAddr=strtoul(hiAddrTemp.c_str(),0,16);
+                     RegB=hiRAM[hiAddr];
+                     break;
+        case '\x12': ADDR++;
+                     itoa(ram[ADDR],temp,16);
+                     hiAddrTemp=temp;
+                     ADDR++;
+                     itoa(ram[ADDR],temp,16);
+                     hiAddrTemp+=temp;
+                     hiAddr=strtoul(hiAddrTemp.c_str(),0,16);
+                     hiRAM[hiAddr]=RegA;
                      break;
         default: printf("ERROR - Could not resolve opcode\n");
                  running = false;
