@@ -1,0 +1,97 @@
+what pins are important for an S100 bus that are already incorporated in the X-16 bus
+
+ S-100     | X-16    | Description
+           |         | 
+ 1 +8V     | +5V     | System power - General board power
+ 2 +16V    |         | System power - Memory chip drive power
+ 3 XRDY    |         | Waits until the slave CPU is ready to continue to the next cycle
+ 4 VI0     | VI0     | Interrupt vector bit 0
+ 5 VI1     | VI1     | Interrupt vector bit 1
+ 6 VI2     | VI2     | Interrupt vector bit 2
+ 7 VI3     | VI3     | Interrupt vector bit 3
+ 8 VI4     | VI4     | Interrupt vector bit 4
+ 9 VI5     | VI5     | Interrupt vector bit 5
+10 VI6     | VI6     | Interrupt vector bit 6
+11 VI7     | VI7     | Interrupt vector bit 7
+12 NMI     |         | Non-maskable interrupt (May implement in X-16?)
+13 PWRFAIL |         | Imminent power-fail warning
+14 DMA 3   | DMA 3   | A signal a temporary bus master sends to the bus controller it wants control.
+15 A18     |         | Address line 18
+16 A16     |         | Address line 16
+17 A17     |         | Address line 17
+18 SDSB*   |         | Floats status lines sMEMR sWO sM1 sINP sOUT sHLTA and sXTRQ to enable temporary master control
+19 CDSB*   |         | Floats status lines pSYNC pSTVAL pDBIN pWR and pHLDA to enable temporary master control
+20 GND     | GND     | Ground
+21 NDEF    | DMCLK   | S-100 single step / Disable Master CLocK
+22 ADSB*   | ADSB*   | Floats address lines to enable temporary master control
+23 DODSB*  | DODSB*  | Floats data lines to enable temporary master control
+24 PHI     | CLK     | Main system clock
+25 pSTVAL* |         | Indicates information on bus is valid. only meaningful when occurs with pSYNC
+26 pHLDA   | pHLDA   | Indicates permanent master has relinquished control to temporary master
+27 RFU     | !CLK    | Inverse main clock
+28 RFU     |         | 
+29 A5      | A5      | Address line 5
+30 A4      | A4      | Address line 4
+31 A3      | A3      | Address line 3
+32 A15     | A15     | Address line 15
+33 A12     | A12     | Address line 12
+34 A9      | A9      | Address line 9
+35 DO1     | DO1     | Data bit 1 out
+36 DO0     | DO0     | Data bit 0 out
+37 A10     | A10     | Address line 10
+38 DO4     | DO4     | Data bit 4 out
+39 DO5     | DO5     | Data bit 5 out
+40 DO6     | DO6     | Data bit 6 out
+41 DI2     | DI2     | Data bit 2 in
+42 DI3     | DI3     | Data bit 3 in
+43 DI7     | DI7     | Data bit 7 in
+44 sM1     | sM1     | Master fetching instruction / Interrupt Acknowledge
+45 sOUT    | BUSW    | Write to bus
+46 sINP    | BUSR    | Read from bus
+47 sMEMR   |         | System reading form Memory (May implement?)
+48 sHLTA   | HALT    | Indicates permanent master has halted. (Only way to resume work is to reset or interrupt)
+49 CLOCK   | CLOCK   | 2 MHz (possibly independent) clock. Used for baud rate generators, RTCs and Interval-timers
+50 GND	   | GND     | Ground
+51 +8V     | +5V     | System power
+52 -16V    | -16V    | Memory chip power
+53 GND     | GND     | Ground
+54 EXT CLR | EXT CLR | Reset vector for external devices
+55 DMA 0   | DMA 0   | A signal a temporary bus master sends to the bus controller it wants control.
+56 DMA 1   | DMA 1   | A signal a temporary bus master sends to the bus controller it wants control.
+57 DMA 2   | DMA 2   | A signal a temporary bus master sends to the bus controller it wants control.
+58 sXTRQ*  | sXTRQ*  | Indicates that the master wants a 16-bit transfer.
+59 A19     |         | Address line 19
+60 SIXTN*  | SIXTN*  | Indicates that the slave is capable of 16 bit transfer
+61 A20     |         | Address line 20
+62 A21     |         | Address line 21
+63 A22     |         | Address line 22
+64 A23     |         | Address line 23
+65 NDEF    |         | 
+66 NDEF    |         | (may be used for DRAM refresh address?)
+67 PHANTOM | PHANTOM | Activates phantom slave instead of normal slave. (may be implemented)
+68 MWRT    |         | ?
+69 RFU     |         |
+70 GND     |         |
+71 RFU     | RUN     | Front panel control over CPU operating state
+72 RDY     | RDY     | Waits until the slave CPU is ready to continue to the next cycle
+73 INT*    | NMI     | Interrupt request line, maskable by software instruction / Non maskable interrupt
+74 HOLD    | HOLD    | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

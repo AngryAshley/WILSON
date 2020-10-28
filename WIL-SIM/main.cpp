@@ -17,7 +17,7 @@ int beginAddr = '\x00';
 ///----------------///
 
 unsigned char ram[255];
-char hiRAM[65535];
+unsigned char hiRAM[65535];
 char currentInst;
 int PC=0;
 int ADDR=0;
@@ -31,6 +31,7 @@ bool running = true;
 string splits[16];
 string path_exe="";
 string progFileName="";
+string ramDumpAfterCompile="";
 
 #ifdef __linux__
     void getPath(){
@@ -78,6 +79,7 @@ void loadSettings(){
     StepCLK=atoi(splitString(file_getLine(path_exe+"\\settings.txt",0),"=")[1].c_str());
     CLK=atoi(splitString(file_getLine(path_exe+"\\settings.txt",1),"=")[1].c_str());
     progFileName=splitString(file_getLine(path_exe+"\\settings.txt",2),"=")[1].c_str();
+    ramDumpAfterCompile=splitString(file_getLine(path_exe+"\\settings.txt",3),"= ")[1].c_str();
 }
 void loadProgram(){
     string compArg = splitString(file_getLine(path_exe+progFileName,0)," =")[0];
@@ -157,21 +159,55 @@ void loadProgram(){
                 ram[ramPos]=stoi(splits[1].substr(0,2).c_str(),0,16);
                 ramPos++;
                 ram[ramPos]=stoi(splits[1].substr(2,2).c_str(),0,16);
+            } else if(splits[0]=="DAT"){
+                if(splits[2].size()==2){
+                    ram[stoi(splits[2],0,16)]==stoi(splits[1],0,16);
+                } else if(splits[2].size()==4){
+                    hiRAM[stoi(splits[2],0,16)]==stoi(splits[1],0,16);
+                } else {
+                    printf("ERROR - COULD NOT RESOLVE ADDRESS, ADDRESS SIZE %d NOT SUPPORTED\n",splits[1].size());
+                }
             } else {
                 ram[ramPos]=atoi(splits[0].c_str());
             }
             i++;
-            printf("Loading command %s in address %d\n",splits[0].c_str(),ramPos);
+            if(splits[0].c_str()=="DAT"){
+                printf("Loading data %s in address %s\n",splits[0].c_str(),splits[1].c_str());
+            } else {
+                printf("Loading command %s in address %d\n",splits[0].c_str(),ramPos);
+            }
             ramPos++;
         };
         printf(" *** PROGRAM COMPILED SUCCESSFULLY\n");
         int tempAdd=0;
-        for(int i=0;i<8;i++){
-            for(int j=0;j<8;j++){
-                printf("%02X ",ram[tempAdd]);
-                tempAdd++;
+        if(ramDumpAfterCompile=="0"){
+
+        } else if(ramDumpAfterCompile=="1"){
+            for(int i=0;i<8;i++){
+                for(int j=0;j<8;j++){
+                    printf("%02X ",ram[tempAdd]);
+                    tempAdd++;
+                }
+                printf("\n");
             }
-            printf("\n");
+        } else if(ramDumpAfterCompile=="2"){
+            for(int i=0;i<32;i++){
+                printf("%04X ",tempAdd);
+                for(int j=0;j<8;j++){
+                    printf("%02X ",ram[tempAdd]);
+                    tempAdd++;
+                }
+                printf("\n");
+            }
+            printf("----------------------------- Lo-Hi divider\n");
+            for(int i=255;i<8415;i++){
+                    printf("%04X ",tempAdd);
+                for(int j=0;j<8;j++){
+                    printf("%02X ",hiRAM[tempAdd]);
+                    tempAdd++;
+                }
+                printf("\n");
+            }
         }
 
     } else {
@@ -185,6 +221,7 @@ void execute(char inst){
     printf("Current Instruction: 0x%02x\n",inst & 0xFF);
     printf("PC: %i, ADDR: %x, RegA: %i, RegB: %i \n",PC,ADDR,RegA,RegB);
     char temp[2];
+    int godverdegodver = hiAddr;
 
     switch(inst){
         case '\xFF':
@@ -271,8 +308,11 @@ void execute(char inst){
                      itoa(ram[ADDR],temp,16);
                      hiAddrTemp+=temp;
                      ADDR++;
+                     printf("Address is %s\n",hiAddrTemp.c_str());
                      hiAddr=strtoul(hiAddrTemp.c_str(),0,16);
-                     hiRAM[hiAddr]=RegA;
+                     godverdegodver = hiAddr;
+                     printf("Converted Address is %lu\n",hiAddr);
+                     hiRAM[godverdegodver]=RegA;
                      break;
         default: printf("ERROR - Could not resolve opcode\n");
                  running = false;
